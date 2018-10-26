@@ -51,7 +51,6 @@ class DomainModel(QObject):
             self._refracts.append(layer.refract)
 
     def _calcReflect(self):
-        print('calc reflect')
         self._lambdas = linspace(self._lambda1, self._lambda2, self._samples)
 
         self._Rn.clear()
