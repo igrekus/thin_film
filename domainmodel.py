@@ -43,8 +43,8 @@ class DomainModel(QObject):
         self._calcReflect()
 
     def _prepLists(self):
-        self._thicks = list()
-        self._refracts = list()
+        self._thicks.clear()
+        self._refracts.clear()
 
         for layer in self._layers:
             self._thicks.append(layer.thick)
