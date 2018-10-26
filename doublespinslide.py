@@ -1,8 +1,10 @@
-from PyQt5.QtCore import Qt, pyqtSlot
+from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QDoubleSpinBox, QSlider, QHBoxLayout
 
 
 class DoubleSpinSlide(QHBoxLayout):
+
+    valueChanged = pyqtSignal(float)
 
     def __init__(self, v_min=0.000, v_max=99.000, v_current=0.000, decimals=2, suffix='', ):
         super().__init__()
@@ -36,11 +38,10 @@ class DoubleSpinSlide(QHBoxLayout):
         self._spin.setEnabled(enabled)
         self._slider.setEnabled(enabled)
 
-    @pyqtSlot(float)
     def _spinChanged(self, value: float):
         self._slider.setValue(int(self._spin.value() * 10 ** self._spin.decimals()))
+        self.valueChanged.emit(value)
 
-    @pyqtSlot(int)
     def _sliderChanged(self, value: int):
         self._spin.setValue(float(self._slider.value() / 10 ** self._spin.decimals()))
 

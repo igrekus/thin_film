@@ -22,8 +22,8 @@ class MainWindow(QMainWindow):
 
         self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
-        self._ui.spinSlideReflect = DoubleSpinSlide(v_min=0.0, v_max=10.000, v_current=0.0, decimals=3)
-        self._ui.gridControl.addLayout(self._ui.spinSlideReflect, 1, 1)
+        self._ui.spinSlideRefract = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.gridControl.addLayout(self._ui.spinSlideRefract, 1, 1)
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
@@ -59,6 +59,7 @@ class MainWindow(QMainWindow):
         self._domainModel.layerChanged.connect(self._layerModel.updateLayer)
 
         self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
+        self._ui.spinSlideRefract.valueChanged.connect(self.onSpinSlideRefractChanged)
 
         self._ui.tableLayer.selectionModel().selectionChanged.connect(self.onTableLayerSelectionChanged)
 
@@ -114,14 +115,14 @@ class MainWindow(QMainWindow):
     def updateControls(self, thick=0, reflect=1.0, f_thick=False, f_reflect=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
-        self._ui.spinSlideReflect.setEnabled(f_reflect)
+        self._ui.spinSlideRefract.setEnabled(f_reflect)
 
         self._ui.radioAir.setEnabled(f_radio)
         self._ui.radioMirror.setEnabled(f_radio)
 
         if f_thick and f_reflect:
             self._ui.spinSlideThick.setValue(thick)
-            self._ui.spinSlideReflect.setValue(reflect)
+            self._ui.spinSlideRefract.setValue(reflect)
 
     # misc events
     def resizeEvent(self, event):
@@ -140,5 +141,9 @@ class MainWindow(QMainWindow):
     def onSpinSlideThickChanged(self, value):
         selected = self._ui.tableLayer.selectionModel().selectedIndexes()[0]
         self._domainModel.updateLayerThickness(selected.row(), value)
+
+    def onSpinSlideRefractChanged(self, value):
+        selected = self._ui.tableLayer.selectionModel().selectedIndexes()[0]
+        self._domainModel.updateLayerRefract(selected.row(), value)
 
 
