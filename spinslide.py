@@ -1,8 +1,10 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QSpinBox, QSlider, QHBoxLayout
 
 
 class SpinSlide(QHBoxLayout):
+
+    valueChanged = pyqtSignal(int)
 
     def __init__(self, v_min=1, v_max=99, v_current=1, suffix=' мкм', ):
         super().__init__()
@@ -21,8 +23,8 @@ class SpinSlide(QHBoxLayout):
         self.addWidget(self._spin)
         self.addWidget(self._slider)
 
-        self._spin.valueChanged.connect(self._slider.setValue)
-        self._slider.valueChanged.connect(self._spin.setValue)
+        self._spin.valueChanged.connect(self._spinChanged)
+        self._slider.valueChanged.connect(self._sliderChanged)
 
     def value(self):
         return self._spin.value()
@@ -33,5 +35,17 @@ class SpinSlide(QHBoxLayout):
     def setEnabled(self, enabled):
         self._spin.setEnabled(enabled)
         self._slider.setEnabled(enabled)
+
+    def _spinChanged(self, value):
+        # self.blockSignals(True)
+        self._slider.setValue(value)
+        # self.blockSignals(False)
+        self.valueChanged.emit(value)
+
+    def _sliderChanged(self, value):
+        # self.blockSignals(True)
+        self._spin.setValue(value)
+        # self.blockSignals(False)
+        self.valueChanged.emit(value)
 
 
