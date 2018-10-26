@@ -71,11 +71,10 @@ class MainWindow(QMainWindow):
             targetRow = targetRow - 1
 
         try:
-            self._domainModel.addRow(targetRow)
+            self._domainModel.addLayer(targetRow)
             self._layerModel.init()
         except Exception as ex:
             print(ex)
-
 
     def onBtnDelLayerClicked(self):
         if not self._ui.tableLayer.selectionModel().hasSelection():
@@ -87,7 +86,7 @@ class MainWindow(QMainWindow):
             print('can\'t delete inf layer')
             return
 
-        self._domainModel.delRow(selectedIndex.row())
+        self._domainModel.delLayer(selectedIndex.row())
         self._layerModel.init()
 
     def onBtnCalcClicked(self):

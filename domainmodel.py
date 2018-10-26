@@ -60,12 +60,12 @@ class DomainModel(QObject):
 
         self.dataReady.emit()
 
-    def addRow(self, row: int):
+    def addLayer(self, row: int):
         self._layers.insert(row, Layer(100, 1.5))
         self._prepLists()
         self._calcReflect()
 
-    def delRow(self, row: int):
+    def delLayer(self, row: int):
         self._layers.remove(self._layers[row])
         self._prepLists()
         self._calcReflect()
