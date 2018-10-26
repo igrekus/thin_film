@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtWidgets import QMainWindow
 
 from domainmodel import DomainModel
+from doublespinslide import DoubleSpinSlide
 from layermodel import LayerModel
 from plotwidget import PlotWidget
 from spinslide import SpinSlide
@@ -21,6 +22,8 @@ class MainWindow(QMainWindow):
 
         self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
+        self._ui.spinSlideReflect = DoubleSpinSlide(v_min=0.0, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.gridControl.addLayout(self._ui.spinSlideReflect, 1, 1)
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
