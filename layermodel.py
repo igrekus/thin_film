@@ -45,7 +45,7 @@ class LayerModel(QAbstractTableModel):
         return QVariant()
 
     def rowCount(self, parent=None, *args, **kwargs):
-        if parent.isValid():
+        if parent is not None and parent.isValid():
             return 0
         return len(self._display_data)
 
@@ -72,12 +72,10 @@ class LayerModel(QAbstractTableModel):
         return QVariant()
 
     # def flags(self, index):
-    #     f = super(PositionTableModel, self).flags(index)
+    #     f = super().flags(index)
     #     col = index.column()
-    #     row = index.row()
     #     if col > 0:
-    #         if 0 <= row < len(self._tableData[col - 1]):
-    #             f = f | Qt.ItemIsEditable
+    #         f = f | Qt.ItemIsEditable
     #     return f
 
 

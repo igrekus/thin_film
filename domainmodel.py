@@ -1,10 +1,9 @@
 import matplotlib.pyplot as plt
 
-from PyQt5.QtCore import QObject, pyqtSignal, QStringListModel
+from PyQt5.QtCore import QObject, pyqtSignal
 from attr import attrs, attrib
-from numpy import linspace
-from scipy.constants import degree
-from tmm import coh_tmm, unpolarized_RT, inf
+from numpy import linspace, ndarray
+from tmm import coh_tmm, inf
 
 
 @attrs
@@ -15,55 +14,96 @@ class Layer(object):
 
 class DomainModel(QObject):
 
+    dataReady = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self._lambda1 = 300   # nm
+        self._lambda2 = 800   # nm
+        self._samples = 300
+
         self._layers = list()
+
+        self._thicks = list()
+        self._refracts = list()
+        self._lambdas = list()
+        self._Rn = list()
 
     def init(self):
         print("init domain model")
 
         self._layers = [
             Layer(thick=inf, refract=1),
-            Layer(thick=100, refract=1.46),
-            Layer(thick=100, refract=2.88),
-            Layer(thick=100, refract=1.46),
-            Layer(thick=100, refract=2.88),
-            Layer(thick=500, refract=1.79),
-            Layer(thick=100, refract=1.46),
-            Layer(thick=100, refract=2.88),
-            Layer(thick=100, refract=1.46),
-            Layer(thick=100, refract=2.88),
+            Layer(thick=100, refract=2.78),
             Layer(thick=inf, refract=1000),
         ]
 
-    def getFilm(self):
-        pass
+        self._prepLists()
+        self._calcReflect()
 
-    def calcReflect(self):
-        print('calc reflect')
-
-        thick_list = list()
-        refract_list = list()
+    def _prepLists(self):
+        self._thicks = list()
+        self._refracts = list()
 
         for layer in self._layers:
-            thick_list.append(layer.thick)
-            refract_list.append(layer.refract)
+            self._thicks.append(layer.thick)
+            self._refracts.append(layer.refract)
 
-        lnms = linspace(300, 800, num=400)
-        Rn = list()
-        for l in lnms:
-            Rn.append(coh_tmm('s', refract_list, thick_list, 0, l)['R'])
+    def _calcReflect(self):
+        print('calc reflect')
+        self._lambdas = linspace(self._lambda1, self._lambda2, self._samples)
 
-        plt.figure()
-        plt.plot(lnms, Rn, 'blue')
-        plt.xlabel('длина волны')
-        plt.ylabel('Отраженная часть')
-        # plt.xlim(300, 700)
-        plt.title('Отражение неполяр. пучка при 0$^\circ$ (син)')
-        plt.savefig('out_light.png', dpi=300)
+        self._Rn.clear()
+        for l in self._lambdas:
+            self._Rn.append(coh_tmm('s', self._refracts, self._thicks, 0, l)['R'])
 
-        print('calc done')
+        self.dataReady.emit()
+
+    def addRow(self, row: int):
+        self._layers.insert(row, Layer(100, 1.5))
+        self._prepLists()
+        self._calcReflect()
+
+    def delRow(self, row: int):
+        self._layers.remove(self._layers[row])
+        self._prepLists()
+        self._calcReflect()
+
+    @property
+    def xs(self):
+        return self._lambdas
+
+    @property
+    def ys(self):
+        return self._Rn
+
+    @property
+    def lambda1(self):
+        return self._lambda1
+
+    @property
+    def lambda2(self):
+        return self._lambda2
+
+    @property
+    def samples(self):
+        return self._samples
+
+    @lambda1.setter
+    def lambda1(self, value):
+        self._lambda1 = value
+        self._calcReflect()
+
+    @lambda2.setter
+    def lambda2(self, value):
+        self._lambda2 = value
+        self._calcReflect()
+
+    @samples.setter
+    def samples(self, value):
+        self._samples = value
+        self._calcReflect()
 
 
 
