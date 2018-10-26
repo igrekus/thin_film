@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMainWindow
 from domainmodel import DomainModel
 from layermodel import LayerModel
 from plotwidget import PlotWidget
+from spinslide import SpinSlide
 
 
 class MainWindow(QMainWindow):
@@ -17,6 +18,9 @@ class MainWindow(QMainWindow):
 
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
+
+        self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
+        self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
@@ -98,8 +102,8 @@ class MainWindow(QMainWindow):
                 print(ex)
 
     def updateControls(self, thick=0, reflect=1, f_thick=False, f_reflect=False, f_radio=False):
-        self._ui.spinThick.setEnabled(f_thick)
-        self._ui.slideThick.setEnabled(f_thick)
+        self._ui.spinSlideThick.setEnabled(f_thick)
+        return
 
         self._ui.spinReflect.setEnabled(f_reflect)
         self._ui.slideReflect.setEnabled(f_reflect)
