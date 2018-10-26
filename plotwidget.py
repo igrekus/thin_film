@@ -1,4 +1,3 @@
-from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QHBoxLayout
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -15,7 +14,6 @@ class PlotWidget(QHBoxLayout):
         self.canvas = FigureCanvas(self.figure)
         self.addWidget(self.canvas)
 
-    @pyqtSlot()
     def plotData(self):
         self.figure.clf()
         self.figure.gca().set_xlabel('Длина волны')
