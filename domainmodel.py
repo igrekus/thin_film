@@ -21,7 +21,7 @@ class DomainModel(QObject):
 
         self._lambda1 = 300   # nm
         self._lambda2 = 800   # nm
-        self._samples = 300
+        self._samples = 100
 
         self._layers = list()
 
