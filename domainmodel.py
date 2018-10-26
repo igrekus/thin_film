@@ -15,6 +15,7 @@ class Layer(object):
 class DomainModel(QObject):
 
     dataReady = pyqtSignal()
+    layerChanged = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -68,6 +69,13 @@ class DomainModel(QObject):
         self._layers.remove(self._layers[row])
         self._prepLists()
         self._calcReflect()
+
+    def updateLayerThickness(self, row, value):
+        self._layers[row].thick = value
+        self._prepLists()
+        self._calcReflect()
+
+        self.layerChanged.emit(row)
 
     @property
     def xs(self):

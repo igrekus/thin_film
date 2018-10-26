@@ -77,6 +77,9 @@ class LayerModel(QAbstractTableModel):
     #         f = f | Qt.ItemIsEditable
     #     return f
 
-
+    def updateLayer(self, row):
+        updated = self._domainModel._layers[row]
+        self._display_data[row] = [row + 1, updated.thick, updated.refract]
+        self.dataChanged.emit(self.index(row, 0, QModelIndex()), self.index(row, self.ColCount, QModelIndex()), [Qt.DisplayRole])
 
 

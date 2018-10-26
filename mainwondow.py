@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
         self._ui.spinSamples.editingFinished.connect(self.onSamplesChanged)
 
         self._domainModel.dataReady.connect(self._plotWidget.plotData)
+        self._domainModel.layerChanged.connect(self._layerModel.updateLayer)
 
         self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
 
