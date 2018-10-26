@@ -16,11 +16,10 @@ class PlotWidget(QHBoxLayout):
 
     def plotData(self):
         self.figure.clf()
-        self.figure.gca().set_xlabel('Длина волны')
-        self.figure.gca().set_ylabel('Отраженная часть')
-        self.figure.gca().set_title('Отражение неполяр. пучка при 0$^\circ$ (син)')
-        # plt.savefig('out_light.png', dpi=300)
-        #
+        self.figure.gca().set_xlabel('λ, нм')
+        self.figure.gca().set_ylabel('Pотр')
+        self.figure.gca().set_title('Поляризация=s, угол=0$^\circ$')
+
         self.figure.gca().plot(self._domainModel.xs, self._domainModel.ys)
         self.canvas.draw()
         # print(len(self._domainModel.xs))
