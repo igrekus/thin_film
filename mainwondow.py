@@ -39,6 +39,14 @@ class MainWindow(QMainWindow):
         self._ui.tableLayer.setModel(self._layerModel)
         self._layerModel.init()
 
+        self.setupSignals()
+
+        self.updateControls()
+
+        self._plotWidget.plotData()
+
+    def setupSignals(self):
+
         self._ui.btnAddLayer.clicked.connect(self.onBtnAddLayerClicked)
         self._ui.btnDelLayer.clicked.connect(self.onBtnDelLayerClicked)
         self._ui.btnCalc.clicked.connect(self.onBtnCalcClicked)
@@ -49,11 +57,10 @@ class MainWindow(QMainWindow):
 
         self._domainModel.dataReady.connect(self._plotWidget.plotData)
 
+        self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
+
         self._ui.tableLayer.selectionModel().selectionChanged.connect(self.onTableLayerSelectionChanged)
 
-        self.updateControls()
-
-        self._plotWidget.plotData()
 
     def refreshView(self):
         self._ui.tableLayer.resizeColumnsToContents()
@@ -103,7 +110,7 @@ class MainWindow(QMainWindow):
             except Exception as ex:
                 print(ex)
 
-    def updateControls(self, thick=0, reflect=1, f_thick=False, f_reflect=False, f_radio=False):
+    def updateControls(self, thick=0, reflect=1.0, f_thick=False, f_reflect=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
         self._ui.spinSlideReflect.setEnabled(f_reflect)
@@ -120,15 +127,17 @@ class MainWindow(QMainWindow):
         self.refreshView()
 
     # slots
-    @pyqtSlot()
     def onLambda1Changed(self):
         self._domainModel.lambda1 = self._ui.spinLambda1.value()
 
-    @pyqtSlot()
     def onLambda2Changed(self):
         self._domainModel.lambda2 = self._ui.spinLambda2.value()
 
-    @pyqtSlot()
     def onSamplesChanged(self):
         self._domainModel.samples = self._ui.spinSamples.value()
+
+    def onSpinSlideThickChanged(self, value):
+        selected = self._ui.tableLayer.selectionModel().selectedIndexes()[0]
+        self._domainModel.updateLayerThickness(selected.row(), value)
+
 
