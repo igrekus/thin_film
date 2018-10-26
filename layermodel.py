@@ -1,7 +1,6 @@
 import datetime
 
 from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex, QVariant, QDate, pyqtSlot, pyqtSignal
-from PyQt5.QtGui import QBrush, QColor, QFont
 
 
 class LayerModel(QAbstractTableModel):
