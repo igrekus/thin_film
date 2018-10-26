@@ -106,17 +106,15 @@ class MainWindow(QMainWindow):
 
     def updateControls(self, thick=0, reflect=1, f_thick=False, f_reflect=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
-        return
 
-        self._ui.spinReflect.setEnabled(f_reflect)
-        self._ui.slideReflect.setEnabled(f_reflect)
+        self._ui.spinSlideReflect.setEnabled(f_reflect)
 
         self._ui.radioAir.setEnabled(f_radio)
         self._ui.radioMirror.setEnabled(f_radio)
 
         if f_thick and f_reflect:
-            self._ui.spinThick.setValue(thick)
-            self._ui.spinReflect.setValue(reflect)
+            self._ui.spinSlideThick.setValue(thick)
+            self._ui.spinSlideReflect.setValue(reflect)
 
     # misc events
     def resizeEvent(self, event):
