@@ -22,8 +22,10 @@ class MainWindow(QMainWindow):
 
         self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
-        self._ui.spinSlideRefract = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
-        self._ui.gridControl.addLayout(self._ui.spinSlideRefract, 1, 1)
+        self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
+        self._ui.spinSlideRefractIm = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.gridControl.addLayout(self._ui.spinSlideRefractIm, 2, 1)
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
@@ -59,7 +61,8 @@ class MainWindow(QMainWindow):
         self._domainModel.layerChanged.connect(self._layerModel.updateLayer)
 
         self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
-        self._ui.spinSlideRefract.valueChanged.connect(self.onSpinSlideRefractChanged)
+        self._ui.spinSlideRefractRe.valueChanged.connect(self.onSpinSlideRefractReChanged)
+        self._ui.spinSlideRefractIm.valueChanged.connect(self.onSpinSlideRefractImChanged)
 
         self._ui.tableLayer.selectionModel().selectionChanged.connect(self.onTableLayerSelectionChanged)
 
@@ -102,33 +105,35 @@ class MainWindow(QMainWindow):
         self._domainModel._calcReflect()
 
     def onTableLayerSelectionChanged(self, new, old):
-        rowIndex, thickIndex, reflectIndex = new.indexes()
+        rowIndex, thickIndex, refractIndex = new.indexes()
 
         if thickIndex.data(Qt.DisplayRole) == 'inf':
             self.updateControls()
         else:
             try:
-                self.updateControls(int(thickIndex.data(Qt.DisplayRole)), float(reflectIndex.data(Qt.DisplayRole)), True, True, False)
+                self.updateControls(int(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
             except Exception as ex:
                 print(ex)
 
-    def updateControls(self, thick=0, reflect=1.0, f_thick=False, f_reflect=False, f_radio=False):
+    def updateControls(self, thick=0, refract: complex=1.0, f_thick=False, f_refract=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
-        self._ui.spinSlideRefract.setEnabled(f_reflect)
+        self._ui.spinSlideRefractRe.setEnabled(f_refract)
+        self._ui.spinSlideRefractIm.setEnabled(f_refract)
 
-        self._ui.radioAir.setEnabled(f_radio)
-        self._ui.radioMirror.setEnabled(f_radio)
+        # self._ui.radioAir.setEnabled(f_radio)
+        # self._ui.radioMirror.setEnabled(f_radio)
 
-        if f_thick and f_reflect:
+        if f_thick and f_refract:
             self._ui.spinSlideThick.setValue(thick)
-            self._ui.spinSlideRefract.setValue(reflect)
+            self._ui.spinSlideRefractRe.setValue(refract.real)
+            self._ui.spinSlideRefractIm.setValue(refract.imag)
 
     # misc events
     def resizeEvent(self, event):
         self.refreshView()
 
-    # slots
+    # parameter widget events
     def onLambda1Changed(self):
         self._domainModel.lambda1 = self._ui.spinLambda1.value()
 
@@ -142,8 +147,19 @@ class MainWindow(QMainWindow):
         selected = self._ui.tableLayer.selectionModel().selectedIndexes()[0]
         self._domainModel.updateLayerThickness(selected.row(), value)
 
-    def onSpinSlideRefractChanged(self, value):
-        selected = self._ui.tableLayer.selectionModel().selectedIndexes()[0]
-        self._domainModel.updateLayerRefract(selected.row(), value)
+    def onSpinSlideRefractReChanged(self, value):
+        selected = self._ui.tableLayer.selectionModel().selectedIndexes()[-1]
+        re = value
+        im = complex(selected.data(Qt.DisplayRole)).imag
+        com_value = complex(re, im)
+        self._domainModel.updateLayerRefract(selected.row(), com_value)
+
+    def onSpinSlideRefractImChanged(self, value):
+        selected = self._ui.tableLayer.selectionModel().selectedIndexes()[-1]
+        re = complex(selected.data(Qt.DisplayRole)).real
+        im = value
+        com_value = complex(re, im)
+        self._domainModel.updateLayerRefract(selected.row(), com_value)
+
 
 
