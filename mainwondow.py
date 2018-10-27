@@ -22,9 +22,9 @@ class MainWindow(QMainWindow):
 
         self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
-        self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
-        self._ui.spinSlideRefractIm = DoubleSpinSlide(v_min=0.001, v_max=10.000, v_current=0.0, decimals=3)
+        self._ui.spinSlideRefractIm = DoubleSpinSlide(v_min=0.000, v_max=10.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractIm, 2, 1)
 
         self._domainModel = DomainModel(self)
