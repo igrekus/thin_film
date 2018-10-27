@@ -35,9 +35,10 @@ class DomainModel(QObject):
         print("init domain model")
 
         self._layers = [
-            Layer(thick=inf, refract=1),
-            Layer(thick=100, refract=2.78),
-            Layer(thick=inf, refract=1000),
+            Layer(thick=inf, refract=1 + 0j),
+            Layer(thick=100, refract=2.78 + 0j),
+            Layer(thick=100, refract=3 + 3.3j),
+            Layer(thick=inf, refract=10000 + 0j),
         ]
 
         self._prepLists()
