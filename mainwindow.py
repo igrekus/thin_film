@@ -1,6 +1,6 @@
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, pyqtSlot
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 from domainmodel import DomainModel
 from doublespinslide import DoubleSpinSlide
@@ -51,7 +51,8 @@ class MainWindow(QMainWindow):
 
         self._ui.btnAddLayer.clicked.connect(self.onBtnAddLayerClicked)
         self._ui.btnDelLayer.clicked.connect(self.onBtnDelLayerClicked)
-        self._ui.btnCalc.clicked.connect(self.onBtnCalcClicked)
+        self._ui.btnLoad.clicked.connect(self.onBtnLoadClicked)
+        self._ui.btnSave.clicked.connect(self.onBtnSaveClicked)
 
         self._ui.spinLambda1.editingFinished.connect(self.onLambda1Changed)
         self._ui.spinLambda2.editingFinished.connect(self.onLambda2Changed)
@@ -101,8 +102,20 @@ class MainWindow(QMainWindow):
         self._domainModel.delLayer(selectedIndex.row())
         self._layerModel.init()
 
-    def onBtnCalcClicked(self):
-        self._domainModel._calcReflect()
+    def onBtnLoadClicked(self):
+        filename, _ = QFileDialog.getOpenFileName(self, 'Открыть файл...', '.', 'Text (*.txt)')
+        try:
+            self._domainModel.init(filename)
+            self._layerModel.init()
+        except Exception as ex:
+            print(ex)
+
+    def onBtnSaveClicked(self):
+        filename, _ = QFileDialog.getSaveFileName(self, 'Сохранить как...', '.', 'Text (*.txt)')
+        try:
+            self._domainModel.saveLayers(filename)
+        except Exception as ex:
+            print(ex)
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()

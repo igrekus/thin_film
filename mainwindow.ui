@@ -249,15 +249,28 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnCalc">
+       <widget class="QPushButton" name="btnLoad">
         <property name="maximumSize">
          <size>
-          <width>30</width>
+          <width>40</width>
           <height>30</height>
          </size>
         </property>
         <property name="text">
-         <string>calc</string>
+         <string>Загр.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSave">
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Сохр.</string>
         </property>
        </widget>
       </item>
