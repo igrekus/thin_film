@@ -76,9 +76,14 @@ class MainWindow(QMainWindow):
         self._ui.tableLayer.resizeColumnsToContents()
 
     # ui events
-    def onBtnAddLayerClicked(self):
+    def hasSelection(self, msg: str):
         if not self._ui.tableLayer.selectionModel().hasSelection():
-            print('select layer to add past to')
+            print(msg)
+            return False
+        return True
+
+    def onBtnAddLayerClicked(self):
+        if not self.hasSelection('select layer to add past to'):
             return
 
         selectedIndex = self._ui.tableLayer.selectionModel().selectedIndexes()[1]
@@ -94,8 +99,7 @@ class MainWindow(QMainWindow):
             print(ex)
 
     def onBtnDelLayerClicked(self):
-        if not self._ui.tableLayer.selectionModel().hasSelection():
-            print('select layer to delete')
+        if not self.hasSelection('select layer to delete'):
             return
 
         selectedIndex = self._ui.tableLayer.selectionModel().selectedIndexes()[1]
@@ -122,13 +126,40 @@ class MainWindow(QMainWindow):
             print(ex)
 
     def onBtnPresetAir(self):
-        print('air')
+        if not self.hasSelection('select layer to use preset'):
+            return
+
+        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+
+        rawThick = thickIndex.data(Qt.DisplayRole)
+        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        refract = (1+0j)
+
+        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def obBtnPresetMirror(self):
-        print('mirror')
+        if not self.hasSelection('select layer to use preset'):
+            return
+
+        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+
+        rawThick = thickIndex.data(Qt.DisplayRole)
+        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        refract = (100+0j)
+
+        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onBtnPresetDiffuse(self):
-        print('diffuse')
+        if not self.hasSelection('select layer to use preset'):
+            return
+
+        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+
+        rawThick = thickIndex.data(Qt.DisplayRole)
+        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        refract = (3+3j)   # TODO check params for diffuse
+
+        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()

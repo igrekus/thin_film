@@ -107,6 +107,14 @@ class DomainModel(QObject):
 
         self.layerChanged.emit(row)
 
+    def updateLayer(self, row, thick, refract):
+        self._layers[row].thick = thick
+        self._layers[row].refract = refract
+        self._prepLists()
+        self._calcReflect()
+
+        self.layerChanged.emit(row)
+
     @property
     def xs(self):
         return self._lambdas
