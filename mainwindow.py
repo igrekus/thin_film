@@ -54,6 +54,10 @@ class MainWindow(QMainWindow):
         self._ui.btnLoad.clicked.connect(self.onBtnLoadClicked)
         self._ui.btnSave.clicked.connect(self.onBtnSaveClicked)
 
+        self._ui.btnPresetAir.clicked.connect(self.onBtnPresetAir)
+        self._ui.btnPresetMirror.clicked.connect(self.obBtnPresetMirror)
+        self._ui.btnPresetDiffuse.clicked.connect(self.onBtnPresetDiffuse)
+
         self._ui.spinLambda1.editingFinished.connect(self.onLambda1Changed)
         self._ui.spinLambda2.editingFinished.connect(self.onLambda2Changed)
         self._ui.spinSamples.editingFinished.connect(self.onSamplesChanged)
@@ -116,6 +120,15 @@ class MainWindow(QMainWindow):
             self._domainModel.saveLayers(filename)
         except Exception as ex:
             print(ex)
+
+    def onBtnPresetAir(self):
+        print('air')
+
+    def obBtnPresetMirror(self):
+        print('mirror')
+
+    def onBtnPresetDiffuse(self):
+        print('diffuse')
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()
