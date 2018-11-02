@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
 
-        self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' мкм')
+        self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' нм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
