@@ -15,6 +15,7 @@ class Layer(object):
 class DomainModel(QObject):
 
     dataReady = pyqtSignal()
+    dataReady3d = pyqtSignal()
     layerChanged = pyqtSignal(int)
 
     def __init__(self, parent=None):
@@ -63,6 +64,7 @@ class DomainModel(QObject):
 
         self._prepLists()
         self._calcReflect()
+        self._calc3d(row=1)
 
     def _prepLists(self):
         self._thicks.clear()
@@ -98,6 +100,7 @@ class DomainModel(QObject):
 
         self.Z = array(ps)
 
+        self.dataReady3d.emit()
         # from matplotlib import pyplot as plt
         # from matplotlib.ticker import LinearLocator
         # from matplotlib import cm

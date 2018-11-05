@@ -5,8 +5,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from domainmodel import DomainModel
 from doublespinslide import DoubleSpinSlide
 from layermodel import LayerModel
+from plot3dwidget import Plot3DWidget
 from plotwidget import PlotWidget
-from spinslide import SpinSlide
 
 
 class MainWindow(QMainWindow):
@@ -30,8 +30,10 @@ class MainWindow(QMainWindow):
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
         self._plotWidget = PlotWidget(parent=self, domainModel=self._domainModel)
+        self._plot3dWidget = Plot3DWidget(parent=self, domainModel=self._domainModel)
 
         self._ui.framePlot.setLayout(self._plotWidget)
+        self._ui.frame3d.setLayout(self._plot3dWidget)
 
         self._init()
 
@@ -63,6 +65,7 @@ class MainWindow(QMainWindow):
         self._ui.spinSamples.editingFinished.connect(self.onSamplesChanged)
 
         self._domainModel.dataReady.connect(self._plotWidget.plotData)
+        self._domainModel.dataReady3d.connect(self._plot3dWidget.plotData)
         self._domainModel.layerChanged.connect(self._layerModel.updateLayer)
 
         self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
