@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
 
-        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=1000, v_current=100, decimals=2, suffix=' нм')
+        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=500, v_current=100, decimals=2, suffix=' нм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
@@ -168,6 +168,11 @@ class MainWindow(QMainWindow):
             self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True, True)
         else:
             self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
+
+        try:
+            self._domainModel._calc3d(rowIndex.row())
+        except Exception as ex:
+            print(ex)
 
     def updateControls(self, thick=0.0, refract: complex=(1.0 + 0j), f_thick=False, f_refract=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)

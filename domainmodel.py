@@ -2,7 +2,7 @@ import os
 
 from PyQt5.QtCore import QObject, pyqtSignal
 from attr import attrs, attrib
-from numpy import linspace
+from numpy import linspace, meshgrid, array
 from tmm import coh_tmm, inf
 
 
@@ -20,8 +20,8 @@ class DomainModel(QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self._lambda1 = 300   # nm
-        self._lambda2 = 800   # nm
+        self._lambda1 = 400   # nm
+        self._lambda2 = 700   # nm
         self._samples = 100
 
         self._layers = list()
@@ -30,6 +30,10 @@ class DomainModel(QObject):
         self._refracts = list()
         self._lambdas = list()
         self._Rn = list()
+
+        self.X = list()
+        self.Y = list()
+        self.Z = list()
 
     def init(self, filename='./default_layers.txt'):
         print("init domain model")
@@ -76,6 +80,40 @@ class DomainModel(QObject):
             self._Rn.append(coh_tmm('s', self._refracts, self._thicks, 0, l)['R'])
 
         self.dataReady.emit()
+
+    def _calc3d(self, row):
+        lambdas = linspace(self.lambda1, self.lambda2, self.samples)
+        thicks = linspace(0, 500, self.samples)
+        ts_range = [x.thick for x in self._layers]
+
+        self.X, self.Y = meshgrid(lambdas, thicks)
+
+        ps = list()
+        for t_row, l_row in zip(self.Y, self.X):
+            new_row = list()
+            for t, l in zip(t_row, l_row):
+                ts_range[row] = t
+                new_row.append(coh_tmm('s', self._refracts, ts_range, 0, l)['R'])
+            ps.append(new_row)
+
+        self.Z = array(ps)
+
+        # from matplotlib import pyplot as plt
+        # from matplotlib.ticker import LinearLocator
+        # from matplotlib import cm
+        # from mpl_toolkits.mplot3d import Axes3D
+        # from numpy import array
+        #
+        # fig = plt.figure()
+        # ax = fig.gca(projection='3d')
+        #
+        # # copper
+        # ax.plot_surface(self.X, self.Y, self.Z, cmap=cm.viridis, linewidth=0)
+        #
+        # ax.set_zlim(0, 1)
+        # ax.w_zaxis.set_major_locator(LinearLocator(6))
+        # 
+        # plt.show()
 
     def saveLayers(self, filename):
         with open(filename, 'wt', encoding='utf-8') as f:
