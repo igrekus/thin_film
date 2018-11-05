@@ -52,8 +52,8 @@ class DomainModel(QObject):
         else:
             self._layers = [
                 Layer(thick=inf, refract=1.0 + 0j),
-                Layer(thick=100, refract=2.78 + 0j),
-                Layer(thick=100, refract=3.0 + 3.3j),
+                Layer(thick=100.0, refract=2.78 + 0j),
+                Layer(thick=100.0, refract=3.0 + 3.3j),
                 Layer(thick=inf, refract=10000 + 0j),
             ]
 
@@ -84,7 +84,7 @@ class DomainModel(QObject):
                 f.write(line)
 
     def addLayer(self, row: int):
-        self._layers.insert(row, Layer(100, 1.5))
+        self._layers.insert(row, Layer(100.0, 1.5))
         self._prepLists()
         self._calcReflect()
 

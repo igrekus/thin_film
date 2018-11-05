@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
 
-        self._ui.spinSlideThick = SpinSlide(v_min=0, v_max=1000, v_current=100, suffix=' нм')
+        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=1000, v_current=100, decimals=2, suffix=' нм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
         rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
 
         rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        thick = rawThick if rawThick == 'inf' else float(rawThick)
         refract = (1+0j)
 
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
@@ -144,7 +144,7 @@ class MainWindow(QMainWindow):
         rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
 
         rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        thick = rawThick if rawThick == 'inf' else float(rawThick)
         refract = (100+0j)
 
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
@@ -156,7 +156,7 @@ class MainWindow(QMainWindow):
         rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
 
         rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else int(rawThick)
+        thick = rawThick if rawThick == 'inf' else float(rawThick)
         refract = (3+3j)   # TODO check params for diffuse
 
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
@@ -167,12 +167,9 @@ class MainWindow(QMainWindow):
         if thickIndex.data(Qt.DisplayRole) == 'inf':
             self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True, True)
         else:
-            try:
-                self.updateControls(int(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
-            except Exception as ex:
-                print(ex)
+            self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
 
-    def updateControls(self, thick=0, refract: complex=(1.0 + 0j), f_thick=False, f_refract=False, f_radio=False):
+    def updateControls(self, thick=0.0, refract: complex=(1.0 + 0j), f_thick=False, f_refract=False, f_radio=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
         self._ui.spinSlideRefractRe.setEnabled(f_refract)
