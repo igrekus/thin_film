@@ -25,4 +25,5 @@ class PlotWidget(QHBoxLayout):
         # print(len(self._domainModel.xs))
         # print(len(self._domainModel.ys))
 
-
+    def saveImage(self):
+        self.figure.savefig('out.png', dpi=300)

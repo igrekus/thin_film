@@ -55,6 +55,7 @@ class MainWindow(QMainWindow):
         self._ui.btnDelLayer.clicked.connect(self.onBtnDelLayerClicked)
         self._ui.btnLoad.clicked.connect(self.onBtnLoadClicked)
         self._ui.btnSave.clicked.connect(self.onBtnSaveClicked)
+        self._ui.btnSaveImage.clicked.connect(self.onBtnSaveImageClicked)
 
         self._ui.btnPresetAir.clicked.connect(self.onBtnPresetAir)
         self._ui.btnPresetMirror.clicked.connect(self.obBtnPresetMirror)
@@ -163,6 +164,9 @@ class MainWindow(QMainWindow):
         refract = (3+3j)   # TODO check params for diffuse
 
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
+
+    def onBtnSaveImageClicked(self):
+        self._plotWidget.saveImage()
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()
