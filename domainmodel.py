@@ -52,7 +52,7 @@ class DomainModel(QObject):
                             if thick == 'inf':
                                 thick = inf
                             else:
-                                thick = int(thick)
+                                thick = float(thick)
                             self._layers.append(Layer(thick=thick, refract=complex(refract)))
         else:
             self._layers = [
