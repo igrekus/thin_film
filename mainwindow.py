@@ -7,6 +7,7 @@ from doublespinslide import DoubleSpinSlide
 from layermodel import LayerModel
 from plot3dwidget import Plot3DWidget
 from plotwidget import PlotWidget
+from spinslide import SpinSlide
 
 
 class MainWindow(QMainWindow):
@@ -20,12 +21,14 @@ class MainWindow(QMainWindow):
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
 
+        self._ui.spinSlideAngle = SpinSlide(v_min=0.0, v_max=90, v_current=0, suffix=' °')
+        self._ui.gridControl.addLayout(self._ui.spinSlideAngle, 0, 1)
         self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=500, v_current=100, decimals=2, suffix=' нм')
-        self._ui.gridControl.addLayout(self._ui.spinSlideThick, 0, 1)
+        self._ui.gridControl.addLayout(self._ui.spinSlideThick, 1, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
-        self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 1, 1)
+        self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 2, 1)
         self._ui.spinSlideRefractIm = DoubleSpinSlide(v_min=0.000, v_max=10.000, v_current=0.0, decimals=3)
-        self._ui.gridControl.addLayout(self._ui.spinSlideRefractIm, 2, 1)
+        self._ui.gridControl.addLayout(self._ui.spinSlideRefractIm, 3, 1)
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
@@ -72,6 +75,7 @@ class MainWindow(QMainWindow):
         self._ui.spinSlideThick.valueChanged.connect(self.onSpinSlideThickChanged)
         self._ui.spinSlideRefractRe.valueChanged.connect(self.onSpinSlideRefractReChanged)
         self._ui.spinSlideRefractIm.valueChanged.connect(self.onSpinSlideRefractImChanged)
+        self._ui.spinSlideAngle.valueChanged.connect(self.onSpinSlideAngleChanged)
 
         self._ui.tableLayer.selectionModel().selectionChanged.connect(self.onTableLayerSelectionChanged)
 
@@ -229,5 +233,7 @@ class MainWindow(QMainWindow):
         com_value = complex(re, im)
         self._domainModel.updateLayerRefract(selected.row(), com_value)
 
+    def onSpinSlideAngleChanged(self, value):
+        self._domainModel.angle = value
 
 
