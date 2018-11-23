@@ -102,22 +102,6 @@ class DomainModel(QObject):
         self.Z = array(ps)
 
         self.dataReady3d.emit()
-        # from matplotlib import pyplot as plt
-        # from matplotlib.ticker import LinearLocator
-        # from matplotlib import cm
-        # from mpl_toolkits.mplot3d import Axes3D
-        # from numpy import array
-        #
-        # fig = plt.figure()
-        # ax = fig.gca(projection='3d')
-        #
-        # # copper
-        # ax.plot_surface(self.X, self.Y, self.Z, cmap=cm.viridis, linewidth=0)
-        #
-        # ax.set_zlim(0, 1)
-        # ax.w_zaxis.set_major_locator(LinearLocator(6))
-        # 
-        # plt.show()
 
     def saveLayers(self, filename):
         with open(filename, 'wt', encoding='utf-8') as f:
