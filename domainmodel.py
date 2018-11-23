@@ -3,7 +3,7 @@ import os
 from PyQt5.QtCore import QObject, pyqtSignal
 from attr import attrs, attrib
 from numpy import linspace, meshgrid, array
-from tmm import coh_tmm, inf
+from tmm import coh_tmm, inf, pi
 
 
 @attrs
@@ -24,6 +24,7 @@ class DomainModel(QObject):
         self._lambda1 = 400   # nm
         self._lambda2 = 700   # nm
         self._samples = 100
+        self._angle = 0       # deg
 
         self._layers = list()
 
@@ -79,7 +80,7 @@ class DomainModel(QObject):
 
         self._Rn.clear()
         for l in self._lambdas:
-            self._Rn.append(coh_tmm('s', self._refracts, self._thicks, 0, l)['R'])
+            self._Rn.append(coh_tmm('s', self._refracts, self._thicks, self._angle * pi / 180, l)['R'])
 
         self.dataReady.emit()
 
@@ -95,7 +96,7 @@ class DomainModel(QObject):
             new_row = list()
             for t, l in zip(t_row, l_row):
                 ts_range[row] = t
-                new_row.append(coh_tmm('s', self._refracts, ts_range, 0, l)['R'])
+                new_row.append(coh_tmm('s', self._refracts, ts_range, self._angle * pi / 180, l)['R'])
             ps.append(new_row)
 
         self.Z = array(ps)
@@ -157,6 +158,10 @@ class DomainModel(QObject):
         self.layerChanged.emit(row)
 
     @property
+    def angle(self):
+        return self._angle
+
+    @property
     def xs(self):
         return self._lambdas
 
@@ -191,5 +196,11 @@ class DomainModel(QObject):
         self._samples = value
         self._calcReflect()
 
-
+    @angle.setter
+    def angle(self, value):
+        self._angle = value
+        try:
+            self._calcReflect()
+        except Exception as ex:
+            print(ex)
 

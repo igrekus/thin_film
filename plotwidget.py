@@ -18,7 +18,7 @@ class PlotWidget(QHBoxLayout):
         self.figure.clf()
         self.figure.gca().set_xlabel('λ, нм')
         self.figure.gca().set_ylabel('Pотр')
-        self.figure.gca().set_title('Поляризация=s, угол=0$^\circ$')
+        self.figure.gca().set_title(f'Поляризация=s, α={self._domainModel.angle}$^\circ$')
 
         self.figure.gca().plot(self._domainModel.xs, self._domainModel.ys)
         self.canvas.draw()
