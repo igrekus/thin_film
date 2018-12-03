@@ -110,12 +110,13 @@ class DomainModel(QObject):
                 f.write(line)
 
     def addLayer(self, row: int):
-        self._layers.insert(row, Layer(100.0, 1.5))
+        self._layers.insert(row, Layer(100.0, 1.5+0j))
         self._prepLists()
         self._calcReflect()
 
     def delLayer(self, row: int):
-        self._layers.remove(self._layers[row])
+        del self._layers[row]
+        # self._layers.remove(self._layers[row])
         self._prepLists()
         self._calcReflect()
 

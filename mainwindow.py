@@ -115,6 +115,9 @@ class MainWindow(QMainWindow):
             print('can\'t delete inf layer')
             return
 
+        row = selectedIndex.row()
+        print('remove row', row)
+
         self._domainModel.delLayer(selectedIndex.row())
         self._layerModel.init()
 
