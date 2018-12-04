@@ -1,5 +1,7 @@
+import os
+
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 from domainmodel import DomainModel
@@ -17,6 +19,8 @@ class MainWindow(QMainWindow):
 
         self.setAttribute(Qt.WA_QuitOnClose)
         self.setAttribute(Qt.WA_DeleteOnClose)
+
+        self._filePath = './'
 
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
@@ -56,8 +60,6 @@ class MainWindow(QMainWindow):
 
         self._ui.btnAddLayer.clicked.connect(self.onBtnAddLayerClicked)
         self._ui.btnDelLayer.clicked.connect(self.onBtnDelLayerClicked)
-        self._ui.btnLoad.clicked.connect(self.onBtnLoadClicked)
-        self._ui.btnSave.clicked.connect(self.onBtnSaveClicked)
         self._ui.btnSaveImage.clicked.connect(self.onBtnSaveImageClicked)
 
         self._ui.btnPresetAir.clicked.connect(self.onBtnPresetAir)
@@ -121,20 +123,35 @@ class MainWindow(QMainWindow):
         self._domainModel.delLayer(selectedIndex.row())
         self._layerModel.init()
 
-    def onBtnLoadClicked(self):
-        filename, _ = QFileDialog.getOpenFileName(self, 'Открыть файл...', '.', 'Text (*.txt)')
+    @pyqtSlot()
+    def on_actLoad_triggered(self):
+        filename, _ = QFileDialog.getOpenFileName(parent=self, caption='Открыть файл...',
+                                                  directory=self._filePath, filter='Text (*.txt)')
+
+        self._filePath = os.path.dirname(filename)
+
         try:
             self._domainModel.init(filename)
             self._layerModel.init()
         except Exception as ex:
             print(ex)
 
-    def onBtnSaveClicked(self):
-        filename, _ = QFileDialog.getSaveFileName(self, 'Сохранить как...', '.', 'Text (*.txt)')
+    @pyqtSlot()
+    def on_actSave_triggered(self):
+        filename, _ = QFileDialog.getOpenFileName(parent=self, caption='Сохранить как...',
+                                                  directory=self._filePath, filter='Text (*.txt)')
+
+        self._filePath = os.path.dirname(filename)
+
         try:
             self._domainModel.saveLayers(filename)
         except Exception as ex:
             print(ex)
+
+    @pyqtSlot()
+    def on_actNew_triggered(self):
+        self._domainModel.newFilm()
+        self._layerModel.init()
 
     def onBtnPresetAir(self):
         if not self.hasSelection('select layer to use preset'):

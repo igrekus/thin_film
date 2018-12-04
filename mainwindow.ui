@@ -87,7 +87,7 @@
            <number>1000</number>
           </property>
           <property name="value">
-           <number>100</number>
+           <number>50</number>
           </property>
          </widget>
         </item>
@@ -269,32 +269,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnLoad">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Загр.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnSave">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Сохр.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -380,13 +354,17 @@
      <x>0</x>
      <y>0</y>
      <width>738</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>&amp;Файл</string>
     </property>
+    <addaction name="actNew"/>
+    <addaction name="actLoad"/>
+    <addaction name="actSave"/>
+    <addaction name="separator"/>
     <addaction name="actExit"/>
    </widget>
    <addaction name="menu"/>
@@ -401,6 +379,39 @@
    </property>
    <property name="statusTip">
     <string>Выйти из приложения</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actSave">
+   <property name="text">
+    <string>Сохранить...</string>
+   </property>
+   <property name="toolTip">
+    <string>Сохранить текущий набор слоёв</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actLoad">
+   <property name="text">
+    <string>Загрузить...</string>
+   </property>
+   <property name="toolTip">
+    <string>Загрузить набор слоёв из файла</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actNew">
+   <property name="text">
+    <string>Новый набор</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>
