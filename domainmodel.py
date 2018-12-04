@@ -23,7 +23,7 @@ class DomainModel(QObject):
 
         self._lambda1 = 400   # nm
         self._lambda2 = 700   # nm
-        self._samples = 100
+        self._samples = 50
         self._angle = 0       # deg
 
         self._layers = list()
