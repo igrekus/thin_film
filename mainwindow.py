@@ -47,8 +47,8 @@ class MainWindow(QMainWindow):
     def _init(self):
         self._domainModel.init()
 
-        self._ui.tableLayer.setModel(self._layerModel)
         self._layerModel.init()
+        self._ui.tableLayer.setModel(self._layerModel)
 
         self.setupSignals()
 
@@ -81,6 +81,7 @@ class MainWindow(QMainWindow):
 
         self._ui.tableLayer.selectionModel().selectionChanged.connect(self.onTableLayerSelectionChanged)
 
+        self._layerModel.layerEdited.connect(self._domainModel.updateLayerThickness)
 
     def refreshView(self):
         self._ui.tableLayer.resizeColumnsToContents()

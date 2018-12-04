@@ -1,6 +1,6 @@
 import os
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from attr import attrs, attrib
 from numpy import linspace, meshgrid, array
 from tmm import coh_tmm, inf, pi
@@ -128,7 +128,8 @@ class DomainModel(QObject):
         self._prepLists()
         self._calcReflect()
 
-    def updateLayerThickness(self, row, value):
+    @pyqtSlot(int, float)
+    def updateLayerThickness(self, row: int, value: float):
         self._layers[row].thick = value
         self._prepLists()
         self._calcReflect()

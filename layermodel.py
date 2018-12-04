@@ -5,6 +5,8 @@ from PyQt5.QtCore import Qt, QAbstractTableModel, QModelIndex, QVariant, QDate, 
 
 class LayerModel(QAbstractTableModel):
 
+    layerEdited = pyqtSignal(int, float)
+
     _default_header = ['№', 'Толщина', 'К-т преломления']
 
     ColNum, \
@@ -51,12 +53,20 @@ class LayerModel(QAbstractTableModel):
     def columnCount(self, parent=None, *args, **kwargs):
         return len(self._header)
 
-    # def setData(self, index, value, role):
-    #     if role == Qt.EditRole:
-    #         col = index.column()
-    #         row = index.row()
-    #
-    #     return False
+    def setData(self, index, value, role):
+        if role == Qt.EditRole:
+            row = index.row()
+
+            try:
+                val = float(value)
+            except ValueError as ex:
+                return False
+
+            self.layerEdited.emit(row, val)
+            self.dataChanged.emit(index, index, [])
+            return True
+
+        return False
 
     def data(self, index, role=None):
         if not index.isValid():
@@ -65,17 +75,16 @@ class LayerModel(QAbstractTableModel):
         col = index.column()
         row = index.row()
 
-        if role == Qt.DisplayRole:
+        if role == Qt.DisplayRole or role == Qt.EditRole:
             return QVariant(str(self._display_data[row][col]))
 
         return QVariant()
 
-    # def flags(self, index):
-    #     f = super().flags(index)
-    #     col = index.column()
-    #     if col > 0:
-    #         f = f | Qt.ItemIsEditable
-    #     return f
+    def flags(self, index):
+        f = super().flags(index)
+        if index.column() == 1 and index.row() not in (0, len(self._display_data) - 1):
+            return f | Qt.ItemIsEditable
+        return f
 
     def updateLayer(self, row):
         updated = self._domainModel._layers[row]
