@@ -109,6 +109,14 @@ class DomainModel(QObject):
                 line = f'{layer.thick};{str(layer.refract).strip("()")}\n'
                 f.write(line)
 
+    def newFilm(self):
+        self._layers = [
+            Layer(thick=inf, refract=1.0 + 0j),
+            Layer(thick=inf, refract=10000 + 0j),
+        ]
+        self._prepLists()
+        self._calcReflect()
+
     def addLayer(self, row: int):
         self._layers.insert(row, Layer(100.0, 1.5+0j))
         self._prepLists()
