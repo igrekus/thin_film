@@ -7,10 +7,17 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from domainmodel import DomainModel
 from doublespinslide import DoubleSpinSlide
 from layermodel import LayerModel
+from mytools.mapmodel import MapModel
 from plot3dwidget import Plot3DWidget
 from plotwidget import PlotWidget
 from spinslide import SpinSlide
 
+
+mats = {
+    0: 1+0j,
+    1: 100+0j,
+    2: 3+3j,
+}
 
 class MainWindow(QMainWindow):
 
@@ -36,9 +43,11 @@ class MainWindow(QMainWindow):
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
+        self._materialModel = MapModel(parent=self, data={ 0: 'Воздух', 1: 'Зеркало', 2: 'Матовая поверхность' }, sort=True)
+        
         self._plotWidget = PlotWidget(parent=self, domainModel=self._domainModel)
         self._plot3dWidget = Plot3DWidget(parent=self, domainModel=self._domainModel)
-
+        
         self._ui.framePlot.setLayout(self._plotWidget)
         self._ui.frame3d.setLayout(self._plot3dWidget)
 
@@ -49,6 +58,7 @@ class MainWindow(QMainWindow):
 
         self._layerModel.init()
         self._ui.tableLayer.setModel(self._layerModel)
+        self._ui.comboMaterial.setModel(self._materialModel)
 
         self.setupSignals()
 
@@ -61,10 +71,6 @@ class MainWindow(QMainWindow):
         self._ui.btnAddLayer.clicked.connect(self.onBtnAddLayerClicked)
         self._ui.btnDelLayer.clicked.connect(self.onBtnDelLayerClicked)
         self._ui.btnSaveImage.clicked.connect(self.onBtnSaveImageClicked)
-
-        self._ui.btnPresetAir.clicked.connect(self.onBtnPresetAir)
-        self._ui.btnPresetMirror.clicked.connect(self.obBtnPresetMirror)
-        self._ui.btnPresetDiffuse.clicked.connect(self.onBtnPresetDiffuse)
 
         self._ui.spinLambda1.editingFinished.connect(self.onLambda1Changed)
         self._ui.spinLambda2.editingFinished.connect(self.onLambda2Changed)
@@ -154,41 +160,21 @@ class MainWindow(QMainWindow):
         self._domainModel.newFilm()
         self._layerModel.init()
 
-    def onBtnPresetAir(self):
-        if not self.hasSelection('select layer to use preset'):
+    @pyqtSlot(int)
+    def on_comboMaterial_currentIndexChanged(self, index):
+        if not self.hasSelection('select layer to apply preset'):
             return
 
-        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+        mat = self._ui.comboMaterial.currentData(MapModel.RoleNodeId)
+        print('preset', mat, mats[mat])
 
-        rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else float(rawThick)
-        refract = (1+0j)
-
-        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
-
-    def obBtnPresetMirror(self):
-        if not self.hasSelection('select layer to use preset'):
-            return
-
-        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
-
-        rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else float(rawThick)
-        refract = (100+0j)
-
-        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
-
-    def onBtnPresetDiffuse(self):
-        if not self.hasSelection('select layer to use preset'):
-            return
-
-        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
-
-        rawThick = thickIndex.data(Qt.DisplayRole)
-        thick = rawThick if rawThick == 'inf' else float(rawThick)
-        refract = (3+3j)   # TODO check params for diffuse
-
-        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
+        # rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+        #
+        # rawThick = thickIndex.data(Qt.DisplayRole)
+        # thick = rawThick if rawThick == 'inf' else float(rawThick)
+        # refract = (100+0j)
+        #
+        # self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onBtnSaveImageClicked(self):
         self._plotWidget.saveImage()
