@@ -11,9 +11,7 @@ win.show()
 
 sys.exit(app.exec_())
 
-# TODO fix delLayer()
 # TODO implement external material library
-# TODO rework UI: separate 3D graph, make graphs ~4:3
 # TODO implement screen shot & layer file naming
 
 # https://refractiveindex.info/?shelf=main&book=Ag&page=Johnson
