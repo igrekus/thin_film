@@ -13,12 +13,6 @@ from plotwidget import PlotWidget
 from spinslide import SpinSlide
 
 
-mats = {
-    0: 1+0j,
-    1: 100+0j,
-    2: 3+3j,
-}
-
 class MainWindow(QMainWindow):
 
     def __init__(self, parent=None):
@@ -43,11 +37,21 @@ class MainWindow(QMainWindow):
 
         self._domainModel = DomainModel(self)
         self._layerModel = LayerModel(parent=self, domainModel=self._domainModel)
-        self._materialModel = MapModel(parent=self, data={ 0: 'Воздух', 1: 'Зеркало', 2: 'Матовая поверхность' }, sort=True)
-        
+        self._labels = {
+            0: 'Воздух',
+            1: 'Зеркало',
+            2: 'Матовая пов-ть'
+        }
+        self._mats = {
+            0: 1 + 0j,
+            1: 100 + 0j,
+            2: 3 + 3j,
+        }
+        self._materialModel = MapModel(parent=self, data=self._labels, sort=True)
+
         self._plotWidget = PlotWidget(parent=self, domainModel=self._domainModel)
         self._plot3dWidget = Plot3DWidget(parent=self, domainModel=self._domainModel)
-        
+
         self._ui.framePlot.setLayout(self._plotWidget)
         self._ui.frame3d.setLayout(self._plot3dWidget)
 
@@ -55,8 +59,10 @@ class MainWindow(QMainWindow):
 
     def _init(self):
         self._domainModel.init()
-
         self._layerModel.init()
+        self._loadPresets()
+        self._materialModel.initModel(self._labels)
+
         self._ui.tableLayer.setModel(self._layerModel)
         self._ui.comboMaterial.setModel(self._materialModel)
 
@@ -65,6 +71,18 @@ class MainWindow(QMainWindow):
         self.updateControls()
 
         self._plotWidget.plotData()
+
+    def _loadPresets(self):
+        name = './presets.txt'
+        self._mats.clear()
+        self._labels.clear()
+        if os.path.isfile(name):
+            with open(file=name, mode='rt', encoding='utf-8') as f:
+                for index, line in enumerate(f.readlines()):
+                    if line:
+                        mat, label = line.strip().split(';')
+                        self._mats[index] = complex(mat)
+                        self._labels[index] = label
 
     def setupSignals(self):
 
@@ -166,15 +184,12 @@ class MainWindow(QMainWindow):
             return
 
         mat = self._ui.comboMaterial.currentData(MapModel.RoleNodeId)
-        print('preset', mat, mats[mat])
-
-        # rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
-        #
-        # rawThick = thickIndex.data(Qt.DisplayRole)
-        # thick = rawThick if rawThick == 'inf' else float(rawThick)
-        # refract = (100+0j)
-        #
-        # self._domainModel.updateLayer(rowIndex.row(), thick, refract)
+        print('preset', mat, self._mats[mat])
+        rowIndex, thickIndex, refractIndex = self._ui.tableLayer.selectionModel().selectedIndexes()
+        rawThick = thickIndex.data(Qt.DisplayRole)
+        thick = rawThick if rawThick == 'inf' else float(rawThick)
+        refract = self._mats[mat]
+        self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onBtnSaveImageClicked(self):
         self._plotWidget.saveImage()
