@@ -22,8 +22,6 @@ class PlotWidget(QHBoxLayout):
 
         self.figure.gca().plot(self._domainModel.xs, self._domainModel.ys)
         self.canvas.draw()
-        # print(len(self._domainModel.xs))
-        # print(len(self._domainModel.ys))
 
     def saveImage(self):
         self.figure.savefig('out.png', dpi=300)
