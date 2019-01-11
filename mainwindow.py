@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
 
         self._ui.spinSlideAngle = SpinSlide(v_min=0.0, v_max=90, v_current=0, suffix=' °')
         self._ui.gridControl.addLayout(self._ui.spinSlideAngle, 0, 1)
-        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=50000, v_current=100, decimals=2, suffix=' нм')
+        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=1000, v_current=100, decimals=2, suffix=' нм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 1, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 2, 1)
