@@ -163,7 +163,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_actSave_triggered(self):
-        filename, _ = QFileDialog.getOpenFileName(parent=self, caption='Сохранить как...',
+        filename, _ = QFileDialog.getSaveFileName(parent=self, caption='Сохранить как...',
                                                   directory=self._filePath, filter='Text (*.txt)')
 
         self._filePath = os.path.dirname(filename)
