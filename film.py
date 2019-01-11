@@ -11,7 +11,6 @@ win.show()
 
 sys.exit(app.exec_())
 
-# TODO implement external material library
 # TODO implement screen shot & layer file naming
 
 # https://refractiveindex.info/?shelf=main&book=Ag&page=Johnson
