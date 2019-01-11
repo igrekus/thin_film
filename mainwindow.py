@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from PyQt5 import uic
@@ -22,6 +23,7 @@ class MainWindow(QMainWindow):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self._filePath = './'
+        self._screenshotIndex = 0
 
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
@@ -192,7 +194,7 @@ class MainWindow(QMainWindow):
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onBtnSaveImageClicked(self):
-        self._plotWidget.saveImage()
+        self._plotWidget.saveImage(self.screenShotName)
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()
@@ -257,5 +259,11 @@ class MainWindow(QMainWindow):
 
     def onSpinSlideAngleChanged(self, value):
         self._domainModel.angle = value
+
+    @property
+    def screenShotName(self):
+        shot = f'{datetime.datetime.now().date().isoformat()}_{self._screenshotIndex:02d}.png'
+        self._screenshotIndex += 1
+        return shot
 
 
