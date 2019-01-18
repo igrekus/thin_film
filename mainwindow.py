@@ -200,23 +200,20 @@ class MainWindow(QMainWindow):
         rowIndex, thickIndex, refractIndex = new.indexes()
 
         if thickIndex.data(Qt.DisplayRole) == 'inf':
-            self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True, True)
+            self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True)
         else:
-            self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
+            self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True)
 
         try:
             self._domainModel._calc3d(rowIndex.row())
         except Exception as ex:
             print(ex)
 
-    def updateControls(self, thick=0.0, refract: complex=(1.0 + 0j), f_thick=False, f_refract=False, f_radio=False):
+    def updateControls(self, thick=0.0, refract: complex=(1.0+0j), f_thick=False, f_refract=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
         self._ui.spinSlideRefractRe.setEnabled(f_refract)
         self._ui.spinSlideRefractIm.setEnabled(f_refract)
-
-        # self._ui.radioAir.setEnabled(f_radio)
-        # self._ui.radioMirror.setEnabled(f_radio)
 
         if f_refract:
             self._ui.spinSlideRefractRe.setValue(refract.real)
