@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from PyQt5 import uic
@@ -22,13 +23,14 @@ class MainWindow(QMainWindow):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self._filePath = './'
+        self._screenshotIndex = 0
 
         # create instance variables
         self._ui = uic.loadUi("mainwindow.ui", self)
 
         self._ui.spinSlideAngle = SpinSlide(v_min=0.0, v_max=90, v_current=0, suffix=' °')
         self._ui.gridControl.addLayout(self._ui.spinSlideAngle, 0, 1)
-        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=50000, v_current=100, decimals=2, suffix=' нм')
+        self._ui.spinSlideThick = DoubleSpinSlide(v_min=0.0, v_max=1000, v_current=100, decimals=2, suffix=' нм')
         self._ui.gridControl.addLayout(self._ui.spinSlideThick, 1, 1)
         self._ui.spinSlideRefractRe = DoubleSpinSlide(v_min=0.001, v_max=100.000, v_current=0.0, decimals=3)
         self._ui.gridControl.addLayout(self._ui.spinSlideRefractRe, 2, 1)
@@ -163,7 +165,7 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_actSave_triggered(self):
-        filename, _ = QFileDialog.getOpenFileName(parent=self, caption='Сохранить как...',
+        filename, _ = QFileDialog.getSaveFileName(parent=self, caption='Сохранить как...',
                                                   directory=self._filePath, filter='Text (*.txt)')
 
         self._filePath = os.path.dirname(filename)
@@ -192,22 +194,22 @@ class MainWindow(QMainWindow):
         self._domainModel.updateLayer(rowIndex.row(), thick, refract)
 
     def onBtnSaveImageClicked(self):
-        self._plotWidget.saveImage()
+        self._plotWidget.saveImage(self.screenShotName)
 
     def onTableLayerSelectionChanged(self, new, old):
         rowIndex, thickIndex, refractIndex = new.indexes()
 
         if thickIndex.data(Qt.DisplayRole) == 'inf':
-            self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True, True)
+            self.updateControls(0, complex(refractIndex.data(Qt.DisplayRole)), False, True)
         else:
-            self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True, False)
+            self.updateControls(float(thickIndex.data(Qt.DisplayRole)), complex(refractIndex.data(Qt.DisplayRole)), True, True)
 
         try:
             self._domainModel._calc3d(rowIndex.row())
         except Exception as ex:
             print(ex)
 
-    def updateControls(self, thick=0.0, refract: complex=(1.0 + 0j), f_thick=False, f_refract=False, f_radio=False):
+    def updateControls(self, thick=0.0, refract: complex=(1.0+0j), f_thick=False, f_refract=False):
         self._ui.spinSlideThick.setEnabled(f_thick)
 
         self._ui.spinSlideRefractRe.setEnabled(f_refract)
@@ -254,5 +256,11 @@ class MainWindow(QMainWindow):
 
     def onSpinSlideAngleChanged(self, value):
         self._domainModel.angle = value
+
+    @property
+    def screenShotName(self):
+        shot = f'{datetime.datetime.now().date().isoformat()}_{self._screenshotIndex:02d}.png'
+        self._screenshotIndex += 1
+        return shot
 
 

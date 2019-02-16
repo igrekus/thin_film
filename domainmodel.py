@@ -80,7 +80,7 @@ class DomainModel(QObject):
 
         self._Rn.clear()
         for l in self._lambdas:
-            self._Rn.append(coh_tmm('s', self._refracts, self._thicks, self._angle * pi / 180, l)['R'])
+            self._Rn.append(coh_tmm('s', self._refracts, self._thicks, self._angle * pi / 180, l)['R']*100)
 
         self.dataReady.emit()
 
