@@ -124,7 +124,6 @@ class DomainModel(QObject):
 
     def delLayer(self, row: int):
         del self._layers[row]
-        # self._layers.remove(self._layers[row])
         self._prepLists()
         self._calcReflect()
 

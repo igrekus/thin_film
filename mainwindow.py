@@ -213,9 +213,6 @@ class MainWindow(QMainWindow):
         self._ui.spinSlideRefractRe.setEnabled(f_refract)
         self._ui.spinSlideRefractIm.setEnabled(f_refract)
 
-        # self._ui.radioAir.setEnabled(f_radio)
-        # self._ui.radioMirror.setEnabled(f_radio)
-
         if f_refract:
             self._ui.spinSlideRefractRe.setValue(refract.real)
             self._ui.spinSlideRefractIm.setValue(refract.imag)
