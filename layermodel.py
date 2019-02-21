@@ -24,9 +24,6 @@ class LayerModel(QAbstractTableModel):
 
     def clear(self):
         pass
-        # self.beginRemoveRows(QModelIndex(), 0, len(self._data))
-        # self._data.clear()
-        # self.endRemoveRows()
 
     def init(self):
         print('init layer model')
