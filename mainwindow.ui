@@ -85,7 +85,7 @@
           <item>
            <widget class="QLabel" name="lblSamples">
             <property name="text">
-             <string>шаги=</string>
+             <string>точек=</string>
             </property>
            </widget>
           </item>
